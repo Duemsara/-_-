@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ទាញព្រ័ត្រ គណិតវិទ្យា - Tug of War Mathematics</title>
+  <meta name="description" content="ល្បែងប្រកួតប្រជែងគណិតវិទ្យាជាក្រុម ទាញព្រ័ត្រគណិតវិទ្យា - Tug of War Mathematics Educational Game">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-wrapper">
+    <!-- Header -->
+    <header class="main-header">
+      <div class="header-left">
+        <button id="btn-home" class="header-btn" title="ដើម / Reset Game">
+          <span class="btn-icon">🏠</span>
+          <span class="btn-text" data-i18n="home">ដើម</span>
+        </button>
+        <button id="btn-settings" class="header-btn" title="ការកំណត់ / Settings">
+          <span class="btn-icon">⚙️</span>
+          <span class="btn-text" data-i18n="settings">ការកំណត់</span>
+        </button>
+      </div>
+
+      <div class="header-center">
+        <h1 class="game-title" data-i18n="title">ទាញព្រ័ត្រ គណិតវិទ្យា</h1>
+        <div class="game-subtitle" data-i18n="subtitle">ល្បែងប្រកួតប្រជែងគណិតវិទ្យាជាក្រុម</div>
+      </div>
+
+      <div class="header-right">
+        <button id="btn-sound" class="header-btn" title="បិទ/បើកសំឡេង">
+          <span class="btn-icon" id="sound-icon">🔊</span>
+          <span class="btn-text" id="sound-text" data-i18n="sound">សំឡេង</span>
+        </button>
+        <button id="btn-fullscreen" class="header-btn" title="ពេញអេក្រង់">
+          <span class="btn-icon" id="fs-icon">⛶</span>
+          <span class="btn-text" id="fs-text" data-i18n="fullscreen">ពេញអេក្រង់</span>
+        </button>
+        <div class="lang-switcher">
+          <button class="lang-btn active" data-lang="km">KH ខ្មែរ</button>
+          <button class="lang-btn" data-lang="en">GB English</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Battle Grid (3 Columns) -->
+    <main class="battle-container">
+      <!-- Team 1 (Left - Blue) -->
+      <section class="team-panel team-1" id="team-panel-1">
+        <div class="team-header-pill">
+          <div class="team-tag">
+            <span class="team-dot" style="background: #38bdf8;"></span>
+            <span data-i18n="team1">ក្រុមទី ១</span>
+          </div>
+          <div class="team-score-badge" id="team1-badge-score">0</div>
+        </div>
+
+        <div class="question-box" id="team1-q-box">
+          <div class="question-text" id="team1-question">3 + 3 = ?</div>
+        </div>
+
+        <div class="input-display" id="team1-input-display">
+          <span class="input-placeholder">0</span>
+        </div>
+
+        <div class="numpad-grid" id="team1-numpad">
+          <button class="pad-btn" data-team="1" data-val="1">1</button>
+          <button class="pad-btn" data-team="1" data-val="2">2</button>
+          <button class="pad-btn" data-team="1" data-val="3">3</button>
+          <button class="pad-btn" data-team="1" data-val="4">4</button>
+          <button class="pad-btn" data-team="1" data-val="5">5</button>
+          <button class="pad-btn" data-team="1" data-val="6">6</button>
+          <button class="pad-btn" data-team="1" data-val="7">7</button>
+          <button class="pad-btn" data-team="1" data-val="8">8</button>
+          <button class="pad-btn" data-team="1" data-val="9">9</button>
+          <button class="pad-btn pad-clear" data-team="1" data-action="clear" title="Clear">✕</button>
+          <button class="pad-btn" data-team="1" data-val="0">0</button>
+          <button class="pad-btn pad-submit" data-team="1" data-action="submit" title="Submit">✓</button>
+        </div>
+      </section>
+
+      <!-- Tug of War Arena (Center) -->
+      <section class="arena-panel">
+        <!-- Top Status Bar -->
+        <div class="arena-top-status">
+          <div class="arena-score-block">
+            <div class="arena-team-name arena-team-1" data-i18n="team1">ក្រុមទី ១</div>
+            <div class="arena-score-num" id="arena-score-1" style="color: var(--team1-primary);">0</div>
+          </div>
+
+          <div class="timer-capsule" id="timer-capsule">
+            <span class="timer-icon">⏱️</span>
+            <span class="timer-text" id="timer-val">00:49</span>
+          </div>
+
+          <div class="arena-score-block">
+            <div class="arena-team-name arena-team-2" data-i18n="team2">ក្រុមទី ២</div>
+            <div class="arena-score-num" id="arena-score-2" style="color: var(--team2-primary);">0</div>
+          </div>
+        </div>
+
+        <!-- SVG Interactive Arena -->
+        <div class="svg-stage-container">
+          <svg class="tug-svg" viewBox="0 0 900 360" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <!-- Pattern for Team 1 (Blue shirt with polka dots) -->
+              <pattern id="pat-team1" width="8" height="8" patternUnits="userSpaceOnUse">
+                <rect width="8" height="8" fill="#0284c7" />
+                <circle cx="4" cy="4" r="1.6" fill="#ffffff" opacity="0.8" />
+              </pattern>
+              
+              <!-- Pattern for Team 2 (Orange/Red shirt with polka dots) -->
+              <pattern id="pat-team2" width="8" height="8" patternUnits="userSpaceOnUse">
+                <rect width="8" height="8" fill="#ea580c" />
+                <circle cx="4" cy="4" r="1.6" fill="#ffffff" opacity="0.8" />
+              </pattern>
+
+              <!-- Checkered Hat / Headband Pattern -->
+              <pattern id="pat-checkers" width="6" height="6" patternUnits="userSpaceOnUse">
+                <rect width="6" height="6" fill="#ffffff" />
+                <rect width="3" height="3" fill="#1e293b" />
+                <rect x="3" y="3" width="3" height="3" fill="#1e293b" />
+              </pattern>
+
+              <!-- Shadow Filter -->
+              <filter id="soft-shadow" x="-10%" y="-10%" width="120%" height="120%">
+                <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.15" />
+              </filter>
+            </defs>
+
+            <!-- Guidelines and Court Markings -->
+            <g id="arena-markings">
+              <!-- Win Line Left -->
+              <line class="arena-guideline win-line-left" x1="220" y1="20" x2="220" y2="340" />
+              <!-- Center Line -->
+              <line class="arena-guideline center-line" x1="450" y1="20" x2="450" y2="340" />
+              <!-- Win Line Right -->
+              <line class="arena-guideline win-line-right" x1="680" y1="20" x2="680" y2="340" />
+            </g>
+
+            <!-- Tug of War Animated Assembly (Rope + Characters move together) -->
+            <g id="rope-and-teams" class="idle-struggle">
+              
+              <!-- Ground Shadows under Characters -->
+              <g id="ground-shadows" opacity="0.4">
+                <ellipse cx="205" cy="285" rx="36" ry="9" fill="#94a3b8" />
+                <ellipse cx="325" cy="285" rx="36" ry="9" fill="#94a3b8" />
+                <ellipse cx="575" cy="285" rx="36" ry="9" fill="#94a3b8" />
+                <ellipse cx="695" cy="285" rx="36" ry="9" fill="#94a3b8" />
+              </g>
+
+              <!-- ================= LAYER 1: BACK ARMS / HANDS (BEHIND ROPE) ================= -->
+              <!-- Team 1 Boy 1 (Far Left) Back Arm gripping behind rope at y=175 -->
+              <g id="t1-b1-back-arm">
+                <line x1="210" y1="180" x2="255" y2="175" stroke="#fed7aa" stroke-width="12" stroke-linecap="round" />
+                <circle cx="255" cy="175" r="9" fill="#ea580c" />
+              </g>
+
+              <!-- Team 1 Boy 2 (Front Left) Back Arm gripping behind rope at y=175 -->
+              <g id="t1-b2-back-arm">
+                <line x1="330" y1="180" x2="375" y2="175" stroke="#fed7aa" stroke-width="12" stroke-linecap="round" />
+                <circle cx="375" cy="175" r="9" fill="#ea580c" />
+              </g>
+
+              <!-- Team 2 Boy 1 (Front Right) Back Arm gripping behind rope at y=175 -->
+              <g id="t2-b1-back-arm">
+                <line x1="570" y1="180" x2="525" y2="175" stroke="#fed7aa" stroke-width="12" stroke-linecap="round" />
+                <circle cx="525" cy="175" r="9" fill="#0284c7" />
+              </g>
+
+              <!-- Team 2 Boy 2 (Far Right) Back Arm gripping behind rope at y=175 -->
+              <g id="t2-b2-back-arm">
+                <line x1="690" y1="180" x2="645" y2="175" stroke="#fed7aa" stroke-width="12" stroke-linecap="round" />
+                <circle cx="645" cy="175" r="9" fill="#0284c7" />
+              </g>
+
+              <!-- ================= LAYER 2: THE ROPE AT EXACT Y = 175PX ================= -->
+              <!-- Rope sagging outwards smoothly at the ends and straight through characters at y=175 -->
+              <path id="the-rope" d="M 60 215 Q 120 185 200 175 L 700 175 Q 780 185 840 215" 
+                    stroke="#1e293b" stroke-width="8" stroke-linecap="round" fill="none" />
+
+              <!-- Center Ribbon & Hanging Marker on Rope (at x=450, y=175) -->
+              <g id="center-ribbon" transform="translate(450, 175)">
+                <!-- Red knot over rope -->
+                <rect x="-8" y="-7" width="16" height="14" rx="4" fill="#e11d48" />
+                <!-- Hanging Ribbon Flag / Triangle -->
+                <polygon points="-7,7 7,7 9,34 0,26 -9,34" fill="#e11d48" />
+                <!-- Center Ribbon Symbol / Letter 'A' -->
+                <text x="0" y="22" font-family="'Outfit', sans-serif" font-weight="900" font-size="12" fill="#ffffff" text-anchor="middle">A</text>
+              </g>
+
+              <!-- ================= LAYER 3: BODIES, HEADS & FRONT ARMS (IN FRONT OF ROPE) ================= -->
+              <!-- === TEAM 1: BOY 1 (Far Left, leaning back to left, facing right) === -->
+              <g id="character-team1-p1" transform="translate(190, 95)">
+                <!-- Legs -->
+                <path d="M 12 105 L -10 185 L 14 185" stroke="#1e293b" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                <!-- Blue Shoes -->
+                <ellipse cx="-4" cy="186" rx="16" ry="6" fill="#0284c7" />
+                <rect x="-16" y="188" width="26" height="4" rx="2" fill="#ffffff" />
+                
+                <!-- Leaning Torso (Blue Polka-Dot Shirt) -->
+                <path d="M 0 45 L 30 50 L 18 115 L -8 110 Z" fill="url(#pat-team1)" rx="8" />
+                
+                <!-- Neck & Head -->
+                <rect x="7" y="32" width="10" height="14" fill="#fed7aa" rx="3" />
+                <circle cx="12" cy="20" r="18" fill="#fed7aa" />
+                <!-- Checkered Bandana/Cap -->
+                <path d="M -6 18 Q 12 2 30 18 Z" fill="url(#pat-checkers)" />
+                <rect x="-6" y="15" width="36" height="6" rx="3" fill="#1e293b" />
+                <!-- Face Features (Smiling, facing right) -->
+                <circle cx="20" cy="18" r="2.5" fill="#1e293b" /> <!-- Eye -->
+                <path d="M 16 26 Q 22 30 25 24" stroke="#e11d48" stroke-width="2" stroke-linecap="round" fill="none" /> <!-- Smile -->
+                <circle cx="16" cy="23" r="3" fill="#fca5a5" opacity="0.6" /> <!-- Blush -->
+
+                <!-- Front Arm gripping over rope at y=175 (relative y = 80) -->
+                <path d="M 6 58 Q 25 70 42 80" stroke="#0284c7" stroke-width="14" stroke-linecap="round" fill="none" />
+                <circle cx="42" cy="80" r="9" fill="#fed7aa" />
+              </g>
+
+              <!-- === TEAM 1: BOY 2 (Front Left, leaning back to left, facing right) === -->
+              <g id="character-team1-p2" transform="translate(310, 95)">
+                <!-- Legs -->
+                <path d="M 12 105 L -10 185 L 14 185" stroke="#1e293b" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                <!-- Blue Shoes -->
+                <ellipse cx="-4" cy="186" rx="16" ry="6" fill="#0284c7" />
+                <rect x="-16" y="188" width="26" height="4" rx="2" fill="#ffffff" />
+                
+                <!-- Leaning Torso (Blue Polka-Dot Shirt) -->
+                <path d="M 0 45 L 30 50 L 18 115 L -8 110 Z" fill="url(#pat-team1)" rx="8" />
+                
+                <!-- Neck & Head -->
+                <rect x="7" y="32" width="10" height="14" fill="#fed7aa" rx="3" />
+                <circle cx="12" cy="20" r="18" fill="#fed7aa" />
+                <!-- Checkered Bandana/Cap -->
+                <path d="M -6 18 Q 12 2 30 18 Z" fill="url(#pat-checkers)" />
+                <rect x="-6" y="15" width="36" height="6" rx="3" fill="#1e293b" />
+                <!-- Face Features (Smiling, facing right) -->
+                <circle cx="20" cy="18" r="2.5" fill="#1e293b" />
+                <path d="M 16 26 Q 22 30 25 24" stroke="#e11d48" stroke-width="2" stroke-linecap="round" fill="none" />
+                <circle cx="16" cy="23" r="3" fill="#fca5a5" opacity="0.6" />
+
+                <!-- Front Arm gripping over rope at y=175 (relative y = 80) -->
+                <path d="M 6 58 Q 25 70 42 80" stroke="#0284c7" stroke-width="14" stroke-linecap="round" fill="none" />
+                <circle cx="42" cy="80" r="9" fill="#fed7aa" />
+              </g>
+
+              <!-- === TEAM 2: BOY 1 (Front Right, leaning back to right, facing left) === -->
+              <g id="character-team2-p1" transform="translate(590, 95)">
+                <!-- Legs leaning back to right -->
+                <path d="M -12 105 L 10 185 L -14 185" stroke="#1e293b" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                <!-- Orange Shoes -->
+                <ellipse cx="4" cy="186" rx="16" ry="6" fill="#ea580c" />
+                <rect x="-10" y="188" width="26" height="4" rx="2" fill="#ffffff" />
+                
+                <!-- Leaning Torso (Orange/Red Polka-Dot Shirt) -->
+                <path d="M 0 45 L -30 50 L -18 115 L 8 110 Z" fill="url(#pat-team2)" rx="8" />
+                
+                <!-- Neck & Head -->
+                <rect x="-17" y="32" width="10" height="14" fill="#fed7aa" rx="3" />
+                <circle cx="-12" cy="20" r="18" fill="#fed7aa" />
+                <!-- Checkered Bandana/Cap -->
+                <path d="M 6 18 Q -12 2 -30 18 Z" fill="url(#pat-checkers)" />
+                <rect x="-30" y="15" width="36" height="6" rx="3" fill="#1e293b" />
+                <!-- Face Features (Smiling, facing left) -->
+                <circle cx="-20" cy="18" r="2.5" fill="#1e293b" />
+                <path d="M -16 26 Q -22 30 -25 24" stroke="#e11d48" stroke-width="2" stroke-linecap="round" fill="none" />
+                <circle cx="-16" cy="23" r="3" fill="#fca5a5" opacity="0.6" />
+
+                <!-- Front Arm gripping over rope at y=175 (relative y = 80) -->
+                <path d="M -6 58 Q -25 70 -42 80" stroke="#ea580c" stroke-width="14" stroke-linecap="round" fill="none" />
+                <circle cx="-42" cy="80" r="9" fill="#fed7aa" />
+              </g>
+
+              <!-- === TEAM 2: BOY 2 (Far Right, leaning back to right, facing left) === -->
+              <g id="character-team2-p2" transform="translate(710, 95)">
+                <!-- Legs leaning back to right -->
+                <path d="M -12 105 L 10 185 L -14 185" stroke="#1e293b" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                <!-- Orange Shoes -->
+                <ellipse cx="4" cy="186" rx="16" ry="6" fill="#ea580c" />
+                <rect x="-10" y="188" width="26" height="4" rx="2" fill="#ffffff" />
+                
+                <!-- Leaning Torso (Orange/Red Polka-Dot Shirt) -->
+                <path d="M 0 45 L -30 50 L -18 115 L 8 110 Z" fill="url(#pat-team2)" rx="8" />
+                
+                <!-- Neck & Head -->
+                <rect x="-17" y="32" width="10" height="14" fill="#fed7aa" rx="3" />
+                <circle cx="-12" cy="20" r="18" fill="#fed7aa" />
+                <!-- Checkered Bandana/Cap -->
+                <path d="M 6 18 Q -12 2 -30 18 Z" fill="url(#pat-checkers)" />
+                <rect x="-30" y="15" width="36" height="6" rx="3" fill="#1e293b" />
+                <!-- Face Features (Smiling, facing left) -->
+                <circle cx="-20" cy="18" r="2.5" fill="#1e293b" />
+                <path d="M -16 26 Q -22 30 -25 24" stroke="#e11d48" stroke-width="2" stroke-linecap="round" fill="none" />
+                <circle cx="-16" cy="23" r="3" fill="#fca5a5" opacity="0.6" />
+
+                <!-- Front Arm gripping over rope at y=175 (relative y = 80) -->
+                <path d="M -6 58 Q -25 70 -42 80" stroke="#ea580c" stroke-width="14" stroke-linecap="round" fill="none" />
+                <circle cx="-42" cy="80" r="9" fill="#fed7aa" />
+              </g>
+
+            </g>
+          </svg>
+        </div>
+
+        <!-- Bottom Rope Position Gauge -->
+        <div class="arena-bottom-gauge">
+          <span class="gauge-team-label arena-team-1" data-i18n="team1">ក្រុមទី ១</span>
+          <div class="gauge-track">
+            <div class="gauge-center-mark"></div>
+            <div class="gauge-thumb" id="gauge-thumb"></div>
+          </div>
+          <span class="gauge-team-label arena-team-2" data-i18n="team2">ក្រុមទី ២</span>
+        </div>
+
+        <!-- School Attribution Footer -->
+        <div class="school-footer">
+          <span>🏫 <strong data-i18n="schoolName">សាលាបឋមសិក្សា ស្រែរាជ</strong></span>
+          <span>👨‍🏫 <span data-i18n="authorName">បង្កើតដោយ៖ លោកគ្រូ ឌឹម សារ៉ា</span></span>
+        </div>
+      </section>
+
+      <!-- Team 2 (Right - Red/Orange) -->
+      <section class="team-panel team-2" id="team-panel-2">
+        <div class="team-header-pill">
+          <div class="team-tag">
+            <span class="team-dot" style="background: #fb7185;"></span>
+            <span data-i18n="team2">ក្រុមទី ២</span>
+          </div>
+          <div class="team-score-badge" id="team2-badge-score">0</div>
+        </div>
+
+        <div class="question-box" id="team2-q-box">
+          <div class="question-text" id="team2-question">9 + 2 = ?</div>
+        </div>
+
+        <div class="input-display" id="team2-input-display">
+          <span class="input-placeholder">0</span>
+        </div>
+
+        <div class="numpad-grid" id="team2-numpad">
+          <button class="pad-btn" data-team="2" data-val="1">1</button>
+          <button class="pad-btn" data-team="2" data-val="2">2</button>
+          <button class="pad-btn" data-team="2" data-val="3">3</button>
+          <button class="pad-btn" data-team="2" data-val="4">4</button>
+          <button class="pad-btn" data-team="2" data-val="5">5</button>
+          <button class="pad-btn" data-team="2" data-val="6">6</button>
+          <button class="pad-btn" data-team="2" data-val="7">7</button>
+          <button class="pad-btn" data-team="2" data-val="8">8</button>
+          <button class="pad-btn" data-team="2" data-val="9">9</button>
+          <button class="pad-btn pad-clear" data-team="2" data-action="clear" title="Clear">✕</button>
+          <button class="pad-btn" data-team="2" data-val="0">0</button>
+          <button class="pad-btn pad-submit" data-team="2" data-action="submit" title="Submit">✓</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="settings-modal">
+    <div class="modal-card">
+      <button class="modal-close-btn" id="btn-close-settings" title="Close">✕</button>
+      <h2 class="modal-title">
+        <span>⚙️</span>
+        <span data-i18n="settingsTitle">ការកំណត់ល្បែង</span>
+      </h2>
+
+      <!-- Math Operations -->
+      <div class="settings-group">
+        <label class="settings-label" data-i18n="operationLabel">ប្រមាណវិធីគណិតវិទ្យា</label>
+        <div class="options-row" id="op-options">
+          <button type="button" class="option-chip active" data-op="mixed" data-i18n="opMixed">ចម្រុះ (+, -, ×, ÷)</button>
+          <button type="button" class="option-chip" data-op="add" data-i18n="opAdd">បូក (+)</button>
+          <button type="button" class="option-chip" data-op="sub" data-i18n="opSub">ដក (-)</button>
+          <button type="button" class="option-chip" data-op="mul" data-i18n="opMul">គុណ (×)</button>
+          <button type="button" class="option-chip" data-op="div" data-i18n="opDiv">ចែក (÷)</button>
+        </div>
+      </div>
+
+      <!-- Digits Configuration -->
+      <div class="settings-group">
+        <label class="settings-label" data-i18n="digitsLabel1">ចំនួនខ្ទង់សម្រាប់តួលេខទី ១</label>
+        <div class="options-row" id="digits1-options">
+          <button type="button" class="option-chip active" data-digits="1" data-i18n="digit1">១ ខ្ទង់</button>
+          <button type="button" class="option-chip" data-digits="2" data-i18n="digit2">២ ខ្ទង់</button>
+          <button type="button" class="option-chip" data-digits="3" data-i18n="digit3">៣ ខ្ទង់</button>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <label class="settings-label" data-i18n="digitsLabel2">ចំនួនខ្ទង់សម្រាប់តួលេខទី ២</label>
+        <div class="options-row" id="digits2-options">
+          <button type="button" class="option-chip active" data-digits="1" data-i18n="digit1">១ ខ្ទង់</button>
+          <button type="button" class="option-chip" data-digits="2" data-i18n="digit2">២ ខ្ទង់</button>
+          <button type="button" class="option-chip" data-digits="3" data-i18n="digit3">៣ ខ្ទង់</button>
+        </div>
+      </div>
+
+      <!-- Game Mode -->
+      <div class="settings-group">
+        <label class="settings-label" data-i18n="modeLabel">របៀបលេង</label>
+        <div class="options-row" id="mode-options">
+          <button type="button" class="option-chip active" data-mode="timer" data-i18n="modeTimer">១. កំណត់ពេល (Timer)</button>
+          <button type="button" class="option-chip" data-mode="target" data-i18n="modeTarget">២. ទាញដាច់ខ្សែ (Target)</button>
+        </div>
+      </div>
+
+      <!-- Timer Duration Settings (Shown if mode === timer) -->
+      <div class="settings-group" id="timer-settings-group">
+        <label class="settings-label" data-i18n="durationLabel">រយៈពេលលេង</label>
+        <div class="options-row" id="duration-presets">
+          <button type="button" class="option-chip" data-sec="30">30s</button>
+          <button type="button" class="option-chip active" data-sec="60">60s</button>
+          <button type="button" class="option-chip" data-sec="90">90s</button>
+          <button type="button" class="option-chip" data-sec="120">120s</button>
+        </div>
+        <div class="time-custom-inputs">
+          <span style="font-size: 0.9rem; font-weight:600;" data-i18n="customTime">ឬកំណត់ផ្ទាល់៖</span>
+          <input type="number" id="custom-min" class="custom-number-input" min="0" max="30" value="1" placeholder="នាទី">
+          <span style="font-size: 0.85rem;" data-i18n="min">នាទី</span>
+          <input type="number" id="custom-sec" class="custom-number-input" min="0" max="59" value="0" placeholder="វិនាទី">
+          <span style="font-size: 0.85rem;" data-i18n="sec">វិនាទី</span>
+        </div>
+      </div>
+
+      <!-- Target Pulls Setting (Shown if mode === target) -->
+      <div class="settings-group" id="target-settings-group" style="display: none;">
+        <label class="settings-label" data-i18n="targetPullsLabel">ចំនួនដងទាញដើម្បីឈ្នះ</label>
+        <div class="options-row" id="target-options">
+          <button type="button" class="option-chip" data-target="3">3 ដង</button>
+          <button type="button" class="option-chip active" data-target="5">5 ដង</button>
+          <button type="button" class="option-chip" data-target="8">8 ដង</button>
+          <button type="button" class="option-chip" data-target="10">10 ដង</button>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="secondary-btn" id="btn-cancel-settings" data-i18n="cancel">បោះបង់</button>
+        <button type="button" class="primary-btn" id="btn-save-settings" data-i18n="save">រក្សាទុក</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Winner Modal -->
+  <div class="modal-overlay" id="winner-modal">
+    <div class="modal-card winner-card">
+      <button class="modal-close-btn" id="btn-close-winner" title="Close">✕</button>
+      <div class="trophy-container">🏆</div>
+      <h2 class="winner-heading" data-i18n="congrats">អបអរសាទរ!</h2>
+      <div class="winner-team-name" id="winner-team-display">ក្រុមទី ១ ទទួលបានជ័យជម្នះ!</div>
+
+      <div class="winner-score-summary">
+        <div class="summary-item">
+          <span class="summary-label" data-i18n="team1">ក្រុមទី ១</span>
+          <span class="summary-val" id="winner-summary-1" style="color: var(--team1-primary);">0</span>
+        </div>
+        <div style="font-size: 1.8rem; font-weight:700; color:#94a3b8; align-self:center;">-</div>
+        <div class="summary-item">
+          <span class="summary-label" data-i18n="team2">ក្រុមទី ២</span>
+          <span class="summary-val" id="winner-summary-2" style="color: var(--team2-primary);">0</span>
+        </div>
+      </div>
+
+      <div class="modal-actions" style="justify-content: center;">
+        <button type="button" class="primary-btn" id="btn-play-again" style="font-size: 1.1rem; padding: 12px 32px;" data-i18n="playAgain">
+          🔄 លេងម្តងទៀត
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas" class="confetti-canvas"></canvas>
+
+  <!-- Scripts -->
+  <script src="audio.js"></script>
+  <script src="confetti.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
